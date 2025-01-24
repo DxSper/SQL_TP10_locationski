@@ -208,7 +208,7 @@ SELECT
     lignesFic.depart,
     lignesFic.retour,
     tarifs.prixJour,
-    (DATEDIFF(lignesFic.retour, lignesFic.depart) + 1) * tarifs.prixJour AS montant
+    (DATEDIFF(COALESCE(lignesFic.retour, NOW()), lignesFic.depart) + 1) * tarifs.prixJour AS montant
 FROM fiches
 JOIN clients ON fiches.noCli = clients.noCli
 JOIN lignesFic ON fiches.noFic = lignesFic.noFic
@@ -216,6 +216,7 @@ JOIN articles ON lignesFic.refArt = articles.refArt
 JOIN grilleTarifs ON articles.codeGam = grilleTarifs.codeGam AND articles.codeCate = grilleTarifs.codeCate
 JOIN tarifs ON grilleTarifs.codeTarif = tarifs.codeTarif
 WHERE fiches.noFic = 1002;
+
 
 -- Ex5
 SELECT gammes.libelle AS Gamme, AVG(tarifs.prixJour) AS `tarif journalier moyen`
